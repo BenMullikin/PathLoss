@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    env_file: ".env"
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    restart: unless-stopped
+  admin:
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    depends_on:
+      - db
+    restart: unless-stopped
+  api:
+    build: ./
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+      - default
+    depends_on:
+      - db
+    restart: unless-stopped
+volumes:
+  db-data:
+networks:
+  backend:
+  default:
+    driver: bridge

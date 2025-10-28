@@ -1,0 +1,7 @@
+fastapi[standard] == 0.120.0
+pydantic == 2.12.3
+psycopg2-binary == 2.9.11
+sqlalchemy[asyncio] == 2.0.44
+asyncpg
+alembic
+geoalchemy2
