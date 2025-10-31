@@ -3,6 +3,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from api.db.base import Base
 from api.db.models.cell_tower import CellTower
+from api.db.models.measurements import Measurement
 import os
 from dotenv import load_dotenv
 

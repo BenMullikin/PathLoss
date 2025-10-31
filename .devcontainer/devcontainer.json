@@ -22,8 +22,8 @@
             "settings": {
                 "extensions.autoCheckUpdates": false,
                 "extensions.autoUpdate": false,
-                "editor.formatOnSave": true,
-                "python.formatting.provider": "black",
+                // "editor.formatOnSave": true,
+                // "python.formatting.provider": "black",
                 "python.analysis.typeCheckingMode": "basic"
             }
         }

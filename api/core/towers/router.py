@@ -24,7 +24,7 @@ async def list_towers(
 async def get_tower(tower_id: int, db: AsyncSession = Depends(get_db)):
     tower = await cell_tower.get_by_id(db, tower_id)
     if not tower:
-        raise HTTPException(status_code=404, detail="Tower not found")
+        raise HTTPException(status_code=404, detail="Tower no found :(")
     return tower
 
 
@@ -71,7 +71,7 @@ async def sync_opencellid(
     lon_max: float,
     db: AsyncSession = Depends(get_db),
 ):
-    client = OpenCellIDClient(api_key=os.getenv("OPENCELLID_API_KEY"))
+    client = OpenCellIDClient(api_key=os.getenv("OPENCELLID_API_KEY")) # type: ignore
     data = await client.fetch_bbox(lat_min, lon_min, lat_max, lon_max)
     towers = await client.sync_to_db(db, data)
     return {"fetched": len(towers)}

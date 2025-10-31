@@ -1,8 +1,7 @@
-from sqlalchemy import select, update, delete, func
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.db.models.cell_tower import CellTower
 from api.db.schemas.cell_tower import CellTowerCreate, CellTowerUpdate
-from typing import List, Optional
 
 
 async def get_all(db: AsyncSession, limit=100, offset=0):
@@ -58,9 +57,9 @@ async def create_or_update(db: AsyncSession, tower_in: CellTowerCreate):
 
     if tower:
         # update lat/lon if changed
-        tower.lat = tower_in.lat
-        tower.lon = tower_in.lon
-        tower.geom = func.ST_SetSRID(
+        tower.lat = tower_in.lat # type: ignore
+        tower.lon = tower_in.lon # type: ignore
+        tower.geom = func.ST_SetSRID( # type: ignore
             func.ST_MakePoint(tower_in.lon, tower_in.lat), 4326
         )
     else:
