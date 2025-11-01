@@ -2,7 +2,7 @@ fastapi[standard] == 0.120.0
 pydantic == 2.12.3
 psycopg2-binary == 2.9.11
 sqlalchemy[asyncio] == 2.0.44
-asyncpg
-alembic
-geoalchemy2
-shapely
+asyncpg==0.30.0
+alembic==1.16.5
+geoalchemy2==0.17.1
+shapely==2.0.7

@@ -7,6 +7,8 @@ from api.db.models.measurements import Measurement
 import os
 from dotenv import load_dotenv
 
+import geoalchemy2
+
 # Load env vars
 load_dotenv()
 

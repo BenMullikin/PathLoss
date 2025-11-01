@@ -7,10 +7,34 @@ class CellTowerBase(BaseModel):
     radio: str
     mcc: int = Field(ge=0, le=999)
     mnc: int = Field(ge=0, le=999)
-    lac: Optional[int] = Field(default=None, ge=0)
+    area_code: Optional[int] = Field(default=None, ge=0)
     cid: int = Field(ge=0)
-    lon: float
     lat: float
+    lon: float
+    elevation_m: Optional[float]
+    source: Optional[str]
+
+    @field_validator("radio")
+    @classmethod
+    def _radio_type(cls, v):
+        radios = ["GSM", "UMTS", "LTE", "NR"]
+        if v not in radios:
+            raise ValueError("Invalid Radio")
+        return v
+    
+    @field_validator("mcc")
+    @classmethod
+    def _mcc_range(cls, v):
+        if not (1 <= v <= 999):
+            raise ValueError("Invalid MCC")
+        return v
+    
+    @field_validator("mnc")
+    @classmethod
+    def _mnc_range(cls, v):
+        if not (0 <= v <= 999):
+            raise ValueError("Invalid MNC")
+        return v
 
     @field_validator("lat")
     @classmethod
@@ -33,7 +57,7 @@ class CellTowerCreate(CellTowerBase):
 
 class CellTowerRead(CellTowerBase):
     id: int
-    seen_at: datetime
+    updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -42,7 +66,9 @@ class CellTowerUpdate(CellTowerBase):
     radio: Optional[str] = None
     mcc: Optional[int] = Field(ge=0, le=999)
     mnc: Optional[int] = Field(ge=0, le=999)
-    lac: Optional[int] = Field(default=None, ge=0)
+    area_code: Optional[int] = Field(default=None, ge=0)
     cid: Optional[int] = Field(ge=0)
-    lon: Optional[float] = None
     lat: Optional[float] = None
+    lon: Optional[float] = None
+    elevation_m: Optional[float] = None
+    source: Optional[str] = None

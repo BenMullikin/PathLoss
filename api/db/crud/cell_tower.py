@@ -18,6 +18,7 @@ async def get_by_id(db: AsyncSession, tower_id):
 
 async def create(db: AsyncSession, tower_in: CellTowerCreate):
     tower = CellTower(**tower_in.model_dump())
+    tower.geom = func.ST_SetSRID(func.ST_MakePoint(tower.lon, tower.lat), 4326) # type: ignore
     db.add(tower)
     await db.commit()
     await db.refresh(tower)
@@ -28,8 +29,11 @@ async def update(db: AsyncSession, tower_id, tower_in: CellTowerUpdate):
     existing = await get_by_id(db, tower_id)
     if not existing:
         return None
-    for field, value in tower_in.model_dump(exclude_unset=True).items():
+    changed = tower_in.model_dump(exclude_unset=True)
+    for field, value in changed.items():
         setattr(existing, field, value)
+    if {"lat", "lon"} & changed.keys():
+        existing.geom = func.ST_SetSRID(func.ST_MakePoint(existing.lon, existing.lat), 4326) # type: ignore
     await db.commit()
     await db.refresh(existing)
     return existing
@@ -49,7 +53,7 @@ async def create_or_update(db: AsyncSession, tower_in: CellTowerCreate):
         CellTower.radio == tower_in.radio,
         CellTower.mcc == tower_in.mcc,
         CellTower.mnc == tower_in.mnc,
-        CellTower.lac == tower_in.lac,
+        CellTower.area_code == tower_in.area_code,
         CellTower.cid == tower_in.cid,
     )
     result = await db.execute(stmt)
@@ -68,4 +72,6 @@ async def create_or_update(db: AsyncSession, tower_in: CellTowerCreate):
             geom=func.ST_SetSRID(func.ST_MakePoint(tower_in.lon, tower_in.lat), 4326),
         )
         db.add(tower)
+    await db.commit()
+    await db.refresh(tower)
     return tower
